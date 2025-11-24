@@ -7,7 +7,7 @@ const IMAGEN_DEFAULT = "https://png.pngtree.com/png-clipart/20230418/original/pn
 function RopaInfo() {
     const { id } = useParams();
 
-    // 👉 EXTRAEMOS addToCart DEL CONTEXTO AQUÍ
+   
     const { addToCart } = useCart();
 
     const [producto, setProducto] = useState(null);
@@ -28,7 +28,7 @@ function RopaInfo() {
         rojo: "red"
     };
 
-    // Carga datos del producto
+    
     useEffect(() => {
         fetch(`http://localhost:4000/producto/${id}`)
             .then(res => res.json())
@@ -43,7 +43,7 @@ function RopaInfo() {
             .then(data => setColores(data));
     }, [id]);
 
-    // Cargar el stock al seleccionar talla y color
+    
     useEffect(() => {
         if (!tallaSel || !colorSel) {
             setStock(null);
@@ -77,7 +77,7 @@ function RopaInfo() {
                 <p style={styles.precio}>S/ {producto.precio}</p>
                 <p>{producto.descripcion}</p>
 
-                {/* STOCK */}
+                
                 {stock === null && (
                     <p style={{ color: "gray" }}>
                         Selecciona talla y color para ver stock
@@ -94,7 +94,7 @@ function RopaInfo() {
                     </p>
                 )}
 
-                {/* Colores */}
+                
                 <h4>Colores:</h4>
                 <div style={styles.flex}>
                     {colores.map(c => (
@@ -113,7 +113,7 @@ function RopaInfo() {
                     ))}
                 </div>
 
-                {/* Tallas */}
+                
                 <h4>Tallas:</h4>
                 <div style={styles.flex}>
                     {tallas.map(t => (
@@ -133,7 +133,7 @@ function RopaInfo() {
                     ))}
                 </div>
 
-                {/* Cantidad */}
+                
                 {tallaSel && colorSel && (
                     <div style={styles.cantidadBox}>
                         <button
