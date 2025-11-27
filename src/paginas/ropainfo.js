@@ -2,12 +2,12 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 
-const IMAGEN_DEFAULT = "https://png.pngtree.com/png-clipart/20230418/original/pngtree-clothing-line-icon-png-image_9065314.png";
+const IMAGEN_DEFAULT = "/imgs/ropazz.png";
 
 function RopaInfo() {
     const { id } = useParams();
 
-   
+
     const { addToCart } = useCart();
 
     const [producto, setProducto] = useState(null);
@@ -28,7 +28,7 @@ function RopaInfo() {
         rojo: "red"
     };
 
-    
+
     useEffect(() => {
         fetch(`http://localhost:4000/producto/${id}`)
             .then(res => res.json())
@@ -43,7 +43,7 @@ function RopaInfo() {
             .then(data => setColores(data));
     }, [id]);
 
-    
+
     useEffect(() => {
         if (!tallaSel || !colorSel) {
             setStock(null);
@@ -77,7 +77,7 @@ function RopaInfo() {
                 <p style={styles.precio}>S/ {producto.precio}</p>
                 <p>{producto.descripcion}</p>
 
-                
+
                 {stock === null && (
                     <p style={{ color: "gray" }}>
                         Selecciona talla y color para ver stock
@@ -94,7 +94,7 @@ function RopaInfo() {
                     </p>
                 )}
 
-                
+
                 <h4>Colores:</h4>
                 <div style={styles.flex}>
                     {colores.map(c => (
@@ -113,7 +113,7 @@ function RopaInfo() {
                     ))}
                 </div>
 
-                
+
                 <h4>Tallas:</h4>
                 <div style={styles.flex}>
                     {tallas.map(t => (
@@ -133,7 +133,7 @@ function RopaInfo() {
                     ))}
                 </div>
 
-                
+
                 {tallaSel && colorSel && (
                     <div style={styles.cantidadBox}>
                         <button
@@ -171,10 +171,18 @@ function RopaInfo() {
                             id_producto: producto.id_producto,
                             nombre: producto.nombre,
                             precio: producto.precio,
-                            talla: tallas.find(t => t.id_talla === tallaSel).talla,
-                            color: colores.find(c => c.id_color === colorSel).nombre,
+
+                            id_talla: tallaSel,
+                            talla: tallas.find(t => t.id_talla === tallaSel)?.talla,
+
+                            id_color: colorSel,
+                            color: colores.find(c => c.id_color === colorSel)?.nombre,
+
                             cantidad,
                         });
+
+
+
 
                         alert("Producto añadido al carrito");
                     }}

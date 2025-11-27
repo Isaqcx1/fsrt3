@@ -7,16 +7,17 @@ export function CartProvider({ children }) {
 
   const addToCart = (item) => {
 
-    // Buscar si existe ya ese producto mismo id-talla-color
+    
     const existing = cart.find(
       p =>
         p.id_producto === item.id_producto &&
-        p.talla === item.talla &&
-        p.color === item.color
+        p.id_talla === item.id_talla &&
+        p.id_color === item.id_color
     );
 
+
     if (existing) {
-      // Si ya existe, solo sumamos la cantidad
+      
       const updated = cart.map(p =>
         p === existing
           ? { ...p, cantidad: p.cantidad + item.cantidad }

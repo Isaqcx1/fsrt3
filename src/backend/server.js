@@ -122,6 +122,138 @@ app.get("/producto/:id/stock-especifico", async (req, res) => {
 });
 
 
+
+
+app.post("/pedidos", async (req, res) => {
+  try {
+    const { cliente_nombre, cliente_email, direccion, telefono, total } = req.body;
+
+    const result = await pool.query(
+      `INSERT INTO Pedidos (cliente_nombre, cliente_email, direccion, telefono, estado, total)
+       VALUES ($1, $2, $3, $4, 'Pendiente', $5)
+       RETURNING id_pedido`,
+      [cliente_nombre, cliente_email, direccion, telefono, total]
+    );
+
+    res.json({
+      success: true,
+      pedido_id: result.rows[0].id_pedido
+    });
+
+  } catch (error) {
+    console.error("❌ ERROR EN /pedidos:", error);
+    res.status(500).json({ success: false, message: "Error al registrar pedido" });
+  }
+});
+
+
+app.post("/pedido-completar", async (req, res) => {
+  const client = await pool.connect();
+
+  try {
+    const { pedido_id, items, metodo_pago, total } = req.body;
+
+    if (!Array.isArray(items)) {
+      return res.status(400).json({
+        success: false,
+        message: "El campo 'items' debe ser un arreglo."
+      });
+    }
+
+    await client.query("BEGIN");
+
+    for (const item of items) {
+      const productoId = item.id_producto || item.id;
+      const tallaNombre = item.talla;
+      const colorNombre = item.color;
+      const cantidad = item.cantidad;
+      const precio = item.precio;
+
+      if (!productoId || !tallaNombre || !colorNombre || !cantidad || !precio) {
+        return res.status(400).json({
+          success: false,
+          message: "Faltan datos en un item",
+          item
+        });
+      }
+
+      
+      const tallaRes = await client.query(
+        `SELECT id_talla FROM Tallas WHERE talla = $1`,
+        [tallaNombre]
+      );
+
+      if (tallaRes.rows.length === 0)
+        throw new Error(`No existe la talla '${tallaNombre}'`);
+
+      const tallaId = tallaRes.rows[0].id_talla;
+
+      
+      const colorRes = await client.query(
+        `SELECT id_color FROM Colores WHERE nombre = $1`,
+        [colorNombre]
+      );
+
+      if (colorRes.rows.length === 0)
+        throw new Error(`No existe el color '${colorNombre}'`);
+
+      const colorId = colorRes.rows[0].id_color;
+
+      
+      await client.query(
+        `INSERT INTO Detalle_Pedido 
+             (pedido_id, producto_id, id_talla, id_color, cantidad, precio_unitario)
+         VALUES ($1, $2, $3, $4, $5, $6)`,
+        [
+          pedido_id,
+          productoId,
+          tallaId,
+          colorId,
+          cantidad,
+          precio
+        ]
+      );
+
+     
+      await client.query(
+        `UPDATE Inventario 
+         SET stock_actual = stock_actual - $1
+         WHERE producto_id = $2 AND id_talla = $3 AND id_color = $4`,
+        [cantidad, productoId, tallaId, colorId]
+      );
+    }
+
+    
+    await client.query(
+      `INSERT INTO Pagos (pedido_id, metodo_pago, monto)
+       VALUES ($1, $2, $3)`,
+      [pedido_id, metodo_pago, total]
+    );
+
+    await client.query("COMMIT");
+
+    res.json({ success: true });
+
+  } catch (error) {
+    await client.query("ROLLBACK");
+    console.error("❌ ERROR pedido-completar:", error);
+    res.status(500).json({ success: false, message: "Error al completar pedido" });
+  } finally {
+    client.release();
+  }
+});
+
+
+
+
+
+
+
+
+
+
+
+
 // Servidor
 app.listen(4000, () => {
   console.log("Servidor backend corriendo en http://localhost:4000");

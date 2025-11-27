@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-// Imagen por defecto
-const IMAGEN_DEFAULT = "https://png.pngtree.com/png-clipart/20230418/original/pngtree-clothing-line-icon-png-image_9065314.png";
+
+const IMAGEN_DEFAULT = "/imgs/ropazz.png";
 
 
 const CATEGORIAS = ["Polos", "Pantalones", "Casacas", "Shorts"];

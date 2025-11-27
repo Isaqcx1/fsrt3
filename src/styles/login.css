@@ -1,0 +1,87 @@
+@import url('https://fonts.googleapis.com/css2?family=Rubik+Spray+Paint&display=swap');
+
+
+.login-header {
+  width: 100%;
+  height: 150px;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 25px;
+  font-family: "Rubik Spray Paint", system-ui;
+}
+
+
+.login-logo {
+  width: 200px;
+  height: auto;
+}
+
+
+.login-title {
+  flex: 1;
+  text-align: center;
+  color: white;
+  font-size: 40px;
+  letter-spacing: 2px;
+  margin-left: -180px; 
+  font-weight: 50;
+}
+
+
+.login-back {
+  width: 50px;
+  height: 50px;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+
+
+.login-main {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 40px;
+  text-align: center;
+  
+}
+
+
+.login-user-img {
+  width: 220px;
+  height: 220px;
+  object-fit: contain;
+  margin-bottom: 20px;
+}
+
+
+.login-user-text {
+  font-size: 30px;
+  color: #000;
+  margin-bottom: 25px;
+  letter-spacing: 2px;
+}
+
+
+.login-btn {
+  padding: 14px 40px;
+  background: #000;
+  color: white;
+  border: none;
+  border-radius: 18px;
+  font-size: 20px;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: 0.25s ease;
+  
+}
+
+.login-btn:hover {
+  background: #6ab4ff;
+  color: #000;
+  transform: translateY(-3px);
+}
